@@ -1,5 +1,0 @@
-A ideia é seguir a primeira opção do trabalho (Vinheta do plantão de notícias da Globo) com algumas modificações. 
-Para que o trabalho possa ser realizado em dupla há a necessidade da criação de alguma interação com o usuário (podendo
-ser click do mouse, teclado e etc), com isso, surgiu a seguinte ideia: quando os microfones da vinheta estiverem passando na tela,
-o usuário poderá clicar no microfone cuja a cor estará disposta no canto superior da tela. Fazendo isso, a interação com o usuário 
-estará feita.
