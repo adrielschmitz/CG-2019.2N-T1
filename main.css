@@ -1,6 +1,9 @@
 body { 
     margin: 0; 
     height: 100vh;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    image-rendering: -moz-crisp-edges;
 }
   
 canvas { 

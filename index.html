@@ -24,7 +24,7 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     document.body.appendChild(renderer.domElement);
-window.addEventListener('resize', () => {
+    window.addEventListener('resize', () => {
       renderer.setSize(window.innerWidth, window.innerHeight);
       camera.aspect = window.innerWidth / window.innerHeight;
 
@@ -66,6 +66,7 @@ window.addEventListener('resize', () => {
     scene.add(light);
 
     var render = function () {
+      // caso a aba do navegador não esteja ativa, o navegador chama essa função menos para poupar processamento, energia e etc...
       requestAnimationFrame(render);
       renderer.render(scene, camera);
     }
@@ -89,7 +90,7 @@ window.addEventListener('resize', () => {
     }
 
     function onClick(event) {
-      console.log(event)
+      // console.log(event)
       event.preventDefault();
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
@@ -103,8 +104,55 @@ window.addEventListener('resize', () => {
       }
     }
 
-    document.addEventListener( 'click', onClick, false);
+    state = {
+      player: { x: 1, y: 1 }
+    }
+
+    function movePlayer(comand) {
+      const acceptedMoves = {
+        ArrowUp(player) {
+          if (player.y - 1 >= 0) {
+            player.y -= 1;
+          }
+        },
+        ArrowDown(player) {
+          if (player.y + 1 < scene.width) {
+            player.x += 1
+          }
+        },
+        ArrowLeft(player) {
+          if (player.y + 1 < scene.height) {
+            player.y += 1;
+          }
+        },
+        ArrowRight(player) {
+          if (player.x + 1 < scene.height) {
+            player.x -= 1;
+          }
+        }
+      }
+
+      // agora quando eu precisar colocar mais uma tecla, é só colocar mais um objeto e 
+      // implementar a regra de negócio, não preciso verificar mais em lugar nenhum se tem 
+      // ou não a tecla e tudo mais. Isso deixa o código com a menor fricção possível
+
+      const keyPress = comando.keyPress;
+      const player = state.players[comand.playerId];
+      const moveFunction = acceptedMoves[keyPress]
+
+      if (moveFunction) {
+        moveFunction(player);
+      }
+
+    }
+
+    function handleKeydown(event) {
+      // console.log('Tecla pressionada: ', event.key)
+    }
+
+    document.addEventListener('click', onClick, false);
     document.addEventListener('mousemove', onMouseMove, false);
+    document.addEventListener('keydown', handleKeydown, false);
 
     render();
   </script>
