@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <title>CG-2019.2N-T1</title>
   <link rel="stylesheet" href="./main.css">
 </head>
 
@@ -24,7 +24,12 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     document.body.appendChild(renderer.domElement);
+window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
 
+      camera.updateProjectionMatrix();
+    })
     window.addEventListener('resize', () => {
       renderer.setSize(window.innerWidth, window.innerHeight);
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -36,10 +41,11 @@
     var mouse = new THREE.Vector2();
 
     var geometry = new THREE.BoxGeometry(1, 1, 1);
-    var material = new THREE.MeshLambertMaterial({ color: 0xF7F7F7 });
-    //var mesh = new THREE.Mesh(geometry, material);
+    var material = new THREE.MeshLambertMaterial({ color: 0xF7F7F7, wireframe: false });
 
-    //scene.add(mesh);
+    var mesh = new THREE.Mesh(geometry, material);
+
+    scene.add(mesh);
 
     meshX = -10;
     for (var i = 0; i < 15; i++) {
@@ -82,7 +88,24 @@
       }
     }
 
-    window.addEventListener('mousemove', onMouseMove);
+    function onClick(event) {
+      console.log(event)
+      event.preventDefault();
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+
+      var intersects = raycaster.intersectObjects(scene.children, true);
+
+      if (intersects.length > 0) {
+        mesh.material.color.set(Math.random() * 0xffffff);
+      }
+    }
+
+    document.addEventListener( 'click', onClick, false);
+    document.addEventListener('mousemove', onMouseMove, false);
+
     render();
   </script>
 </body>
