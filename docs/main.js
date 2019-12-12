@@ -8,7 +8,7 @@ var fernando_face_url = "images/fernando/fernando_face.png"
 
 var scene, camera, renderer;
 var rigth_cube, left_cube, top_cube, bottom_cube;
-var velocity = 0.02;
+var velocity = 0.04;
 
 var player = {
   id: 'null',
@@ -159,17 +159,15 @@ const movePlayer = (comand) => {
 
 const handleKeydown = (event) => {
   movePlayer(event);
-  console.log('Tecla pressionada: ', event.key)
+  // console.log('Tecla pressionada: ', event.key)
 }
 
 const changeRotate = (number) => {
   const rotate = ((player.shape.rotation.z / Math.PI) + number) * -1 * Math.PI;
-  console.log(rotate);
   player.shape.rotation.z = rotate;
 }
 
 const render = () => {
-  // caso a aba do navegador não esteja ativa, o navegador chama essa função menos vezes para poupar processamento, energia e etc...
   requestAnimationFrame(render);
   renderer.render(scene, camera);
 
