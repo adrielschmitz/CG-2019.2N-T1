@@ -51,7 +51,7 @@ const setPlayerId = (id) => {
 }
 
 const initializeBorders = () => {
-  let geometry = new THREE.BoxGeometry(1, 5, 1);
+  let geometry = new THREE.BoxGeometry(1.5, 5, 1);
   let material = new THREE.MeshBasicMaterial({ depthWrite: false, depthTest: false })
 
   rigth_cube = new THREE.Mesh(geometry, material);
@@ -59,7 +59,7 @@ const initializeBorders = () => {
   left_cube = new THREE.Mesh(geometry, material);
   left_cube.position.set(-4.5, 0, 0.5);
 
-  geometry = new THREE.BoxGeometry(9, 1, 1);
+  geometry = new THREE.BoxGeometry(9, 1.5, 1);
   top_cube = new THREE.Mesh(geometry, material);
   top_cube.position.set(0, 2.5, 0.5);
   bottom_cube = new THREE.Mesh(geometry, material);
@@ -98,13 +98,13 @@ const handleChangeTeacherTexture = (teacher_id) => {
   if (teacherTexture) {
     setPlayerId(teacher_id)
     const url = teacherTexture()
-    var texture = new THREE.TextureLoader().load(url);
+    const texture = new THREE.TextureLoader().load(url);
     material.map = texture;
   }
 }
 
 const initializePlayer = () => {
-  const geometry = new THREE.CircleGeometry(0.1, 32);
+  const geometry = new THREE.CircleGeometry(0.25, 32);
   player.shape = new THREE.Mesh(geometry, material);
   player.shape.rotateZ(Math.random() * (0, 2) * Math.PI);
   scene.add(player.shape);
