@@ -1,80 +1,87 @@
-var scene = new THREE.Scene();
-var scene_size = new THREE.Vector2(0, 0);
+var scene, camera, renderer;
+var rigth_cube, left_cube, top_cube, bottom_cube, player;
 
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 3;
-
-var renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setClearColor("#000");
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.getSize(scene_size);
-
-document.body.appendChild(renderer.domElement);
-window.addEventListener('resize', () => {
+const init = () => {
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 3;
+  
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setClearColor("#000");
   renderer.setSize(window.innerWidth, window.innerHeight);
-  camera.aspect = window.innerWidth / window.innerHeight;
+  
+  document.body.appendChild(renderer.domElement);
+  window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+  
+    camera.updateProjectionMatrix();
+  });
 
-  camera.updateProjectionMatrix();
-  renderer.getSize(scene_size);
-});
+  const light = new THREE.PointLight(0xFFFFFF, 1, 1000);
+  light.position.set(0, 0, 0);
+  scene.add(light);
 
-var light = new THREE.PointLight(0xFFFFFF, 1, 1000);
-light.position.set(0, 0, 0);
-scene.add(light);
+  initializeBorders();
+  initializePlayer();
 
-var geometry = new THREE.BoxGeometry(1, 5, 1);
-var material_2 = new THREE.MeshBasicMaterial({ depthWrite: false, depthTest: false })
+  document.addEventListener('keydown', handleKeydown, false);
+  render();
+}
 
-var rigth_cube = new THREE.Mesh(geometry, material_2)
-rigth_cube.position.set(4.5, 0, 0.5);
-// scene.add(rigth_cube)
-var left_cube = new THREE.Mesh(geometry, material_2)
-left_cube.position.set(-4.5, 0, 0.5);
-// scene.add(left_cube)
+const initializeBorders = () => {
+  let geometry = new THREE.BoxGeometry(1, 5, 1);
+  let material = new THREE.MeshBasicMaterial({ depthWrite: false, depthTest: false })
 
-var geometry_2 = new THREE.BoxGeometry(9, 1, 1);
-var top_cube = new THREE.Mesh(geometry_2, material_2)
-top_cube.position.set(0, 2.5, 0.5);
-var bottom_cube = new THREE.Mesh(geometry_2, material_2)
-bottom_cube.position.set(0, -2.5, 0.5);
+  rigth_cube = new THREE.Mesh(geometry, material);
+  rigth_cube.position.set(4.5, 0, 0.5);
+  left_cube = new THREE.Mesh(geometry, material);
+  left_cube.position.set(-4.5, 0, 0.5);
 
+  geometry = new THREE.BoxGeometry(9, 1, 1);
+  top_cube = new THREE.Mesh(geometry, material);
+  top_cube.position.set(0, 2.5, 0.5);
+  bottom_cube = new THREE.Mesh(geometry, material);
+  bottom_cube.position.set(0, -2.5, 0.5);
 
+  geometry = new THREE.BoxGeometry(8.5, 4.5, 0.00001);
+  material = new THREE.MeshBasicMaterial({ depthWrite: false, depthTest: false })
+  const cube = new THREE.Mesh(geometry, material);
+  cube.position.set(0, 0, 0);
 
-const isInContainer = () => {
-  var robotBB = new THREE.Box3().setFromObject(circle);
-  var homeBB = new THREE.Box3().setFromObject(cube);
-  var robotIsHome = homeBB.containsBox(robotBB);
+  const edges = new THREE.EdgesGeometry(cube.geometry);
+  const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff } ));
+  scene.add(line);
+}
 
-  return robotIsHome;
+const initializePlayer = () => {
+  const geometry = new THREE.CircleGeometry(0.1, 32);
+  const material = new THREE.MeshBasicMaterial( {color: 0xffff00 });
+  player = new THREE.Mesh(geometry, material);
+  scene.add(player);
 }
 
 const isCollider = (teste_cube) => {
-  const circle_BB = new THREE.Box3().setFromObject(circle);
+  const circle_BB = new THREE.Box3().setFromObject(player);
   const cube_BB = new THREE.Box3().setFromObject(teste_cube);
   const is_collide = cube_BB.containsBox(circle_BB);
   
   return is_collide;
 }
 
-function movePlayer(comand) {
+const movePlayer = (comand) => {
   const accepted_moves = {
     ArrowUp() {
-      if (!isCollider(top_cube)) circle.translateY(0.05);
+      if (!isCollider(top_cube)) player.translateY(0.05);
     },
     ArrowDown() {
-      if (!isCollider(bottom_cube)) circle.translateY(-0.05);
+      if (!isCollider(bottom_cube)) player.translateY(-0.05);
     },
     ArrowLeft() {
-      if (!isCollider(left_cube)) circle.translateX(-0.05);
+      if (!isCollider(left_cube)) player.translateX(-0.05);
     },
     ArrowRight() {
-      if (!isCollider(rigth_cube)) circle.translateX(0.05);
-    },
-    Enter() {
-      var robotBB = new THREE.Box3().setFromObject(circle);
-      var homeBB = new THREE.Box3().setFromObject(cube);
-      var robotIsHome = homeBB.containsBox(robotBB);
-      console.log(robotIsHome)
+      if (!isCollider(rigth_cube)) player.translateX(0.05);
     }
   };
 
@@ -88,42 +95,15 @@ function movePlayer(comand) {
   if (moveFunction)  moveFunction();
 }
 
-function handleKeydown(event) {
-  movePlayer(event)
+const handleKeydown = (event) => {
+  movePlayer(event);
   console.log('Tecla pressionada: ', event.key)
 }
 
-document.addEventListener('keydown', handleKeydown, false);
-
-var geometry = new THREE.BoxGeometry(8.5, 4.5, 0.00001);
-var material1 = new THREE.MeshBasicMaterial({ depthWrite: false, depthTest: false })
-var cube = new THREE.Mesh(geometry, material1)
-cube.position.set(0, 0, 0)
-// scene.add(cube)
-
-var geometry = new THREE.CircleGeometry(0.1, 32);
-var material = new THREE.MeshBasicMaterial( {color: 0xffff00 });
-var circle = new THREE.Mesh(geometry, material);
-scene.add(circle);
-
-
-var edges = new THREE.EdgesGeometry( cube.geometry );
-var line = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0xffffff } ) );
-scene.add(line);
-
-
-// var geo = new THREE.EdgesGeometry( object.geometry );
-// var mat = new THREE.LineBasicMaterial( { color: 0x000000, linewidth: 4 } );
-// var wireframe = new THREE.LineSegments( geo, mat );
-// wireframe.renderOrder = 1; // make sure wireframes are rendered 2nd
-// object.add( wireframe );
-
-
-
-var render = function () {
+const render = () => {
   // caso a aba do navegador não esteja ativa, o navegador chama essa função menos para poupar processamento, energia e etc...
   requestAnimationFrame(render);
   renderer.render(scene, camera);
 }
 
-render();
+init();
