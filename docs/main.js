@@ -4,6 +4,7 @@ var marco_face_url = "images/marco/marco_face.png";
 var dota2_url = "images/emilio/dota2_icon.png";
 var pill_icon = "images/bins/pill_icon.png";
 var bueno_icon = "images/marco/bueno.png";
+var fernando_face_url = "images/fernando/fernando_face.png"
 
 var scene, camera, renderer;
 var rigth_cube, left_cube, top_cube, bottom_cube;
@@ -86,8 +87,8 @@ const handleChangeTeacherTexture = (teacher_id) => {
     Marco() {
       return marco_face_url;
     },
-    Dota2() {
-      return dota2_url;
+    Fernando() {
+      return fernando_face_url;
     }    
   }
 
@@ -140,7 +141,7 @@ const movePlayer = (comand) => {
     },
     ArrowRight() {
       if (!isCollider(rigth_cube)) {
-        handleChangeTeacherTexture('Dota2')
+        handleChangeTeacherTexture('Fernando')
         player.shape.rotateZ(0.05);
       }
     }
