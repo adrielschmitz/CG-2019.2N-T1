@@ -78,18 +78,10 @@ const initializeBorders = () => {
 
 const handleChangeTeacherTexture = (teacher_id) => {
   const accepted_textures = {
-    Bins() {
-      return bins_face_url
-    },
-    Emilio() {
-      return emilio_face_url;
-    },
-    Marco() {
-      return marco_face_url;
-    },
-    Fernando() {
-      return fernando_face_url;
-    }    
+    Bins() { return bins_face_url },
+    Emilio() { return emilio_face_url },
+    Marco() { return marco_face_url },
+    Fernando() { return fernando_face_url }
   }
 
   if (teacher_id === player.id) return;
@@ -122,28 +114,16 @@ const isCollider = (teste_cube) => {
 const movePlayer = (comand) => {
   const accepted_moves = {
     ArrowUp() {
-      if (!isCollider(top_cube)) {
-        handleChangeTeacherTexture('Emilio')
-        player.shape.rotateZ(0.05);
-      }
+      if (!isCollider(top_cube)) player.shape.rotateZ(0.05);
     },
     ArrowDown() {
-      if (!isCollider(bottom_cube)) {
-        handleChangeTeacherTexture('Marco')
-        player.shape.rotateZ(-0.05);
-      }
+      if (!isCollider(bottom_cube)) player.shape.rotateZ(-0.05);
     },
     ArrowLeft() {
-      if (!isCollider(left_cube)) {
-        handleChangeTeacherTexture('Bins')
-        player.shape.rotateZ(-0.05);
-      }
+      if (!isCollider(left_cube)) player.shape.rotateZ(-0.05);
     },
     ArrowRight() {
-      if (!isCollider(rigth_cube)) {
-        handleChangeTeacherTexture('Fernando')
-        player.shape.rotateZ(0.05);
-      }
+      if (!isCollider(rigth_cube)) player.shape.rotateZ(0.05);
     }
   };
 
@@ -171,10 +151,19 @@ const render = () => {
   requestAnimationFrame(render);
   renderer.render(scene, camera);
 
-  if (isCollider(top_cube)) changeRotate(0);
-  if (isCollider(bottom_cube)) changeRotate(0);
-  if (isCollider(left_cube)) changeRotate(1);
-  if (isCollider(rigth_cube)) changeRotate(1);
+  if (isCollider(top_cube)) {
+    changeRotate(0);
+    handleChangeTeacherTexture('Emilio')
+  } else if (isCollider(bottom_cube)) {
+    changeRotate(0);
+    handleChangeTeacherTexture('Bins')
+  } else if (isCollider(left_cube)) {
+    changeRotate(1);
+    handleChangeTeacherTexture('Marco')
+  } else if (isCollider(rigth_cube)) {
+    changeRotate(1);
+    handleChangeTeacherTexture('Fernando')
+  }
   player.shape.translateX(velocity)
 }
 
