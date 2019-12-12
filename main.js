@@ -1,5 +1,6 @@
 var scene, camera, renderer;
 var rigth_cube, left_cube, top_cube, bottom_cube, player;
+var velocity = 0.02;
 
 const init = () => {
   scene = new THREE.Scene();
@@ -58,6 +59,7 @@ const initializePlayer = () => {
   const geometry = new THREE.CircleGeometry(0.1, 32);
   const material = new THREE.MeshBasicMaterial( {color: 0xffff00 });
   player = new THREE.Mesh(geometry, material);
+  player.rotateZ(Math.random() * (0, 2) * Math.PI);
   scene.add(player);
 }
 
@@ -72,16 +74,16 @@ const isCollider = (teste_cube) => {
 const movePlayer = (comand) => {
   const accepted_moves = {
     ArrowUp() {
-      if (!isCollider(top_cube)) player.translateY(0.05);
+      if (!isCollider(top_cube)) player.rotateZ(0.05);
     },
     ArrowDown() {
-      if (!isCollider(bottom_cube)) player.translateY(-0.05);
+      if (!isCollider(bottom_cube)) player.rotateZ(-0.05);
     },
     ArrowLeft() {
-      if (!isCollider(left_cube)) player.translateX(-0.05);
+      if (!isCollider(left_cube)) player.rotateZ(-0.05);
     },
     ArrowRight() {
-      if (!isCollider(rigth_cube)) player.translateX(0.05);
+      if (!isCollider(rigth_cube)) player.rotateZ(0.05);
     }
   };
 
@@ -100,10 +102,22 @@ const handleKeydown = (event) => {
   console.log('Tecla pressionada: ', event.key)
 }
 
+const changeRotate = (number) => {
+  const rotate = ((player.rotation.z / Math.PI) + number) * -1 * Math.PI;
+  console.log(rotate);
+  player.rotation.z = rotate;
+} 
+
 const render = () => {
-  // caso a aba do navegador não esteja ativa, o navegador chama essa função menos para poupar processamento, energia e etc...
+  // caso a aba do navegador não esteja ativa, o navegador chama essa função menos vezes para poupar processamento, energia e etc...
   requestAnimationFrame(render);
   renderer.render(scene, camera);
+
+  if (isCollider(top_cube)) changeRotate(0);
+  if (isCollider(bottom_cube)) changeRotate(0);
+  if (isCollider(left_cube)) changeRotate(1);
+  if (isCollider(rigth_cube)) changeRotate(1);
+  player.translateX(velocity)
 }
 
 init();
